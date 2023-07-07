@@ -1,29 +1,28 @@
-function cats(arr) {
-    function createCat(name, age) {
-        let Cat = {
-            name,
-            age,
-            meow: () => console.log(`${name}, age ${age} says Meow`)
-        }
+function solve(arr) {
 
-        return Cat;
-    };
-
-    let cats = [];
-
-    for (let index = 0; index < arr.length; index++) {
-        let catData = arr[index].split(" ");
-        let [name, age] = [catData[0], catData[1]];
-        cats.push(new createCat(name, age));
+class Cat {
+    constructor(name, age) {
+        this.name = name;
+        this.age = age;
     }
-
-    for (const cat of cats) {
-        cat.meow();
+    meow() {
+        console.log(`${this.name}, age ${this.age} says Meow`);
     }
 }
 
-cats(['Mellow 2', 'Tom 5']);
+let cats = [];
 
+for (let index = 0; index < arr.length; index++) {
+    let catData = arr[index].split(" ");
+    let [name, age] = [catData[0], catData[1]];
+    cats.push(new Cat(name, age));
+}
+
+for (const cat of cats) {
+    cat.meow();
+}
+}
+solve(['Mellow 2', 'Tom 5']);
 
 // OUTPUT
 // Mellow, age 2 says Meow
