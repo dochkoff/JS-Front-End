@@ -1,4 +1,18 @@
 function loadCommits() {
-    // Try it with Fetch API
-    console.log('TODO...');
+    const username = document.querySelector('#username').value;
+    const repo = document.querySelector('#repo').value;
+    const list = document.querySelector('#commits');
+
+    list.innerHTML = '';
+
+    fetch(`https://api.github.com/repos/${username}/${repo}/commits`)
+        .then((res) => res.json())
+        .then((commits) => {
+            commits.forEach(({ commit }) => {
+                const item = document.createElement('li');
+                item.textContent = commit.message;
+
+                list.appendChild(item);
+            });
+        });
 }
