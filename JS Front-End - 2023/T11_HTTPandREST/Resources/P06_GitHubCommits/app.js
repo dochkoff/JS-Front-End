@@ -10,9 +10,15 @@ function loadCommits() {
         .then((commits) => {
             commits.forEach(({ commit }) => {
                 const item = document.createElement('li');
-                item.textContent = commit.message;
+                item.textContent = `${commit.author.name}: ${commit.message}`;
 
                 list.appendChild(item);
             });
+        })
+        .catch((error) => {
+            const item = document.createElement('li');
+            item.textContent = `Error: ${error.status}`;
+
+            list.appendChild(item);
         });
 }
