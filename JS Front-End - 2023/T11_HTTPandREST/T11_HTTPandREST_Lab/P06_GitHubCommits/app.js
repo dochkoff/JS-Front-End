@@ -16,6 +16,7 @@ function loadCommits() {
             });
         })
         .catch((error) => {
+            console.log(error);
             const item = document.createElement('li');
             item.textContent = `Error: ${error.status}`;
 
