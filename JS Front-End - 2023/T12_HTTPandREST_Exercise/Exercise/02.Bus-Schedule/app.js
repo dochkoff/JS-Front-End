@@ -1,11 +1,11 @@
 function solve() {
     const departButton=document.querySelector('#depart');
     const arriveButtno=document.querySelector('#arrive');
-    const busInfoBox=document.querySelector('#info');
+    const busInfoBox = document.querySelector('#info .info');
 
     let busStopInfo = {
         name: '',
-        next: 'depot'
+        next: 'depot',
     };
 
     function depart() {
