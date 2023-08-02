@@ -8,29 +8,30 @@ function solve() {
         label: document.getElementById('label'),
         points: document.getElementById('points'),
         assignee: document.getElementById('assignee'),
-    }
+    };
+
     actionSelectors = {
         createBtn: document.getElementById('create-task-btn'),
         deleteBtn: document.getElementById('delete-task-btn'),
         taskSection: document.getElementById('tasks-section'),
         totalPoints: document.getElementById('total-sprint-points'),
         taskId: document.getElementById('task-id'),
-    }
+    };
 
     const labelClasses = {
-        Feature: 'feature',
+        'Feature': 'feature',
         'Low Priority Bug': 'low-priority',
         'High Priority Bug': 'high-priority',
-    }
+    };
 
     const icons = {
-        Feature: '&#8865',
-        'Low Priority Bug': '&#9737',
-        'High Priority Bug': '&#9888',
-    }
+        Feature: '&#8865;',
+        'Low Priority Bug': '&#9737;',
+        'High Priority Bug': '&#9888;',
+    };
 
     actionSelectors.createBtn.addEventListener('click', createTask);
-    // actionSelectors.deleteBtn.addEventListener('click', deleteTask);
+    actionSelectors.deleteBtn.addEventListener('click', deleteTask);
 
     function createTask(){
         if (Object.values(taskInputs).some(input => input.value==='')) {
@@ -59,23 +60,62 @@ function solve() {
         const divActions = createElement('div', article, null, null, ['task-card-actions']);
         const delBtnAct = createElement('button', divActions, 'Delete');
 
-        // delBtnAct.addEventListener('click', loadDeleteConfirm);
+        delBtnAct.addEventListener('click', loadDeleteConfirm);
 
+        calculateTotalPoints();
+        clearAllInputs();
+    }
+
+    function calculateTotalPoints() {
         const totalPoints = Object.values(tasks).reduce((acc, curr) => acc + curr.points, 0);
         actionSelectors.totalPoints.textContent = `Total Points ${totalPoints}pts`;
     }
 
+    function deleteTask() {
+        let taskId = actionSelectors.taskId.value;
+        let tasksElement = document.querySelector(`#${taskId}`);
+        tasksElement.remove();
+        delete tasks[taskId];
+        
+        Object.values(taskInputs).forEach((input) => {
+            input.disabled = true;
+        })
 
+        clearAllInputs();
+        calculateTotalPoints();
 
+        actionSelectors.deleteBtn.disabled = true;
+        actionSelectors.createBtn.removeAttribute('disabled');
+    }
 
     function clearAllInputs(){
-        Object.values(task).forEach((input) => {
+        Object.values(taskInputs).forEach((input) => {
             input.value = '';
         })
+        // taskInputs.label.value = "Feature";
+    }
+
+    function loadDeleteConfirm(event) {
+        const taskId = event.currentTarget.parentElement.parentElement.getAttribute('id');
+        taskInputs.title.value = tasks[taskId].title;
+        taskInputs.description.value = tasks[taskId].description;
+        taskInputs.label.value = tasks[taskId].label;
+        taskInputs.points.value = tasks[taskId].points;
+        taskInputs.assignee.value = tasks[taskId].assignee;
+
+        Object.values(taskInputs).forEach((input) => {
+            input.disabled = true;
+        })
+
+        actionSelectors.createBtn.disabled = true;
+        actionSelectors.deleteBtn.removeAttribute('disabled');
+        
+        actionSelectors.taskId.value = taskId;
     }
 
     function createElement(type, parentNode, content, id, classes, attributes, useInnerHtml) {
         const htmlElement = document.createElement(type);
+        
         if (content && useInnerHtml) {
             htmlElement.innerHTML = content;
         } else {
@@ -89,11 +129,11 @@ function solve() {
         if (id) {
             htmlElement.id = id;
         }
-        //['item1', 'item2', ...]
+
         if (classes && classes.length > 0) {
-            htmlElement.classList.add(...classes);//може да са няколко класа
+            htmlElement.classList.add(...classes);
         }
-        //{src: 'link to img', href: 'link to site', 'type: 'checkbox''}
+
         if (attributes) {
             for (const key in attributes) {
                 htmlElement.setAttribute(key, attributes[key]);
