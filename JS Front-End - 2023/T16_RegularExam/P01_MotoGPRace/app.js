@@ -1,99 +1,64 @@
 function solve(input) {
     let numberOfRiders = input.shift();
-
     let riders = [];
 
-    for (let i = 0; i < numberOfRiders; i++) {
-        let rider = input.shift().split('|');
-
-        if (Number(rider[1]) > 100) {
-            rider[1] = 100;
+    for (let index = 0; index < numberOfRiders; index++) {
+        const inputInfo = input.shift().split(`|`);
+        const riderName = inputInfo[0];
+        const fuelCapacity = Number(inputInfo[1]);
+        const riderPossition = Number(inputInfo[2]);
+        
+        if(!riders.hasOwnProperty(riderName)){
+            riders[riderName] = {fuelCapacity,riderPossition};
         }
-
-        if (Number(rider[1]) < 0) {
-            rider[1] = 0;
-        }
-
-        riders.push(rider)
     }
+
+    const ridersNames = Array.from(Object.keys(riders));
 
     let commandLine = input.shift().split(' - ');
 
     while (commandLine[0] !== 'Finish') {
         let command = commandLine[0];
-        let rider1Name = commandLine[1];
 
         if (command === 'StopForFuel') {
+            let rider = commandLine[1];
             let minFuel = Number(commandLine[2]);
-            let chngPosition = commandLine[3];
+            let newPosition = Number(commandLine[3]);
 
-            riders.forEach((rider) => {
-                if (rider[0] === rider1Name) {
-
-                    if (Number(rider[1]) < minFuel) {
-                        rider[2] = chngPosition;
-                        console.log(`${rider1Name} stopped to refuel but lost his position, now he is ${chngPosition}.`);
-                    }
-                    if (Number(rider[1]) >= minFuel) {
-                        console.log(`${rider1Name} does not need to stop for fuel!`);
-                    }
-                }
-            })
-
+            if (riders[rider].fuelCapacity < minFuel) {
+                riders[rider].riderPossition = newPosition;
+                console.log(`${rider} stopped to refuel but lost his position, now he is ${newPosition}.`);
+            }
+            else {
+                console.log(`${rider} does not need to stop for fuel!`);
+            }
         } else if (command === 'Overtaking') {
-            let rider2Name = commandLine[2];
+            let rider1=commandLine[1];
+            let rider2=commandLine[2]
+            let rider1Posion=riders[rider1].riderPossition;
+            let rider2Posion=riders[rider2].riderPossition;
 
-            let rider1;
-            let rider2;
-            let rider1Index;
-            let rider2Index;
-            let rider1Posion;
-            let rider2Posion;
+            if (rider1Posion < rider2Posion) {
+                riders[rider1].riderPossition=rider2Posion;
+                riders[rider2].riderPossition=rider1Posion;
 
-            riders.forEach(rider => {
-                if (rider[0] === rider1Name) {
-                    rider1 = rider;
-                    rider1Posion = rider[2];
-                    rider1Index = riders.indexOf(rider);
-                }
-                if (rider[0] === rider2Name) {
-                    rider2 = rider;
-                    rider2Posion = rider[2];
-                    rider2Index = riders.indexOf(rider);
-                }
-            })
-
-            if (rider1Index < rider2Index) {
-                let rider1NewPosition = rider2Posion;
-                rider2[2] = rider1Posion;
-                rider1[2] = rider1NewPosition;
-
-                riders.splice(rider1Index, 1);
-                riders.splice(rider1Index + 1, 0, rider1);
-                console.log(`${rider1Name} overtook ${rider2Name}!`);
+                console.log(`${rider1} overtook ${rider2}!`);
             }
         } else if (command === 'EngineFail') {
-            let rider1;
-            let rider1Posion;
+            let rider=commandLine[1];
             let lapsLeft = commandLine[2];
-
-            riders.forEach(rider => {
-                if (rider[0] === rider1Name) {
-                    rider1 = rider;
-                    rider1Posion = riders.indexOf(rider);
-                    riders.splice(rider1Posion, 1);
-                    console.log(`${rider1Name} is out of the race because of a technical issue, ${lapsLeft} laps before the finish.`);
-                }
-            })
+            let riderIndex = Object.keys(riders).indexOf(rider);
+            ridersNames.splice(riderIndex, 1);
+            console.log(`${rider} is out of the race because of a technical issue, ${lapsLeft} laps before the finish.`);
         }
 
         commandLine = input.shift().split(' - ');
     }
 
-    riders.forEach(rider => {
-        console.log(`${rider[0]}`);
-        console.log(`   Final position: ${rider[2]}`);
-    })
+    ridersNames.forEach(riderName => {
+    console.log(`${riderName}`);
+    console.log(`   Final position: ${riders[riderName].riderPossition}`);
+    });
 }
 
 solve(["3",
