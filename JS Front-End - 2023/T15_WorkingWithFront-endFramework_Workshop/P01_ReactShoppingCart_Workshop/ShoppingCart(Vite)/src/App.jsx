@@ -1,8 +1,8 @@
 import "./index.css"
-import ShopingCart from "./components/ShopingCart"
+import ShoppingCart from "./components/ShoppingCart"
 
 function App() {
-  return <ShopingCart />
+  return <ShoppingCart />
 }
 
 export default App
